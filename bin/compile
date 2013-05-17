@@ -1,0 +1,90 @@
+#!/bin/bash
+# usage: bin/compile <build-dir> <cache-dir>
+
+set -eo pipefail
+
+mkdir -p "$1" "$2"
+build=$(cd "$1/" && pwd)
+cache=$(cd "$2/" && pwd)
+ver=${GOVERSION:-1.1}
+file=${GOFILE:-go$ver.$(uname|tr A-Z a-z)-amd64.tar.gz}
+url=${GOURL:-http://go.googlecode.com/files/$file}
+buildpack=$(dirname $(dirname $0))
+
+# Python
+venv=$cache/venv
+mkdir -p $cache/pip
+python=python2.6
+PATH=$venv/bin:$PATH
+
+#virtualenv() {
+#    python "$buildpack/vendor/virtualenv-1.7/virtualenv.py" "$@"
+#}
+
+if test -e $build/bin && ! test -d $build/bin
+then
+    echo >&2 " !     File bin exists and is not a directory."
+    exit 1
+fi
+
+if ! test -f $build/.godir
+then
+    echo >&2 " !     A .godir is required. For instructions:"
+    echo >&2 " !     http://mmcgrana.github.com/2012/09/getting-started-with-go-on-heroku"
+    exit 1
+fi
+
+if test -d $cache/go-$ver/go
+then
+    echo "-----> Using Go $ver"
+else
+    rm -rf $cache/* # be sure not to build up cruft
+    mkdir -p $cache/go-$ver
+    cd $cache/go-$ver
+    echo -n "-----> Installing Go $ver..."
+    curl -sO $url
+    tar zxf $file
+    rm -f $file
+    echo " done"
+fi
+
+GOROOT=$cache/go-$ver/go export GOROOT
+GOPATH=$build/.openshift/g export GOPATH
+PATH=$GOROOT/bin:$PATH
+
+if ! (which hg 2> /dev/null && which bzr 2> /dev/null)
+then
+    echo -n "       Installing Virtualenv..."
+    virtualenv --python $python --distribute --never-download --prompt='(venv) ' $venv 2>&1 > /dev/null 
+    . $venv/bin/activate 2>&1 > /dev/null
+    echo " done"
+
+    echo -n "       Installing Mercurial..."
+    pip install --use-mirrors mercurial 2>&1 > /dev/null
+    echo " done"
+
+    echo -n "       Installing Bazaar..."
+    pip install --use-mirrors bzr 2>&1 > /dev/null
+    echo " done"
+fi
+
+name=$(cat $build/.godir)
+p=$GOPATH/src/$name
+mkdir -p $p
+cp -R $build/* $p
+
+unset GIT_DIR # unset git dir or it will mess with goinstall
+echo "-----> Running: go get -tags openshift ./..."
+cd $p
+go get -tags openshift ./...
+
+mkdir -p $build/bin
+mv $GOPATH/bin/* $build/bin
+rm -rf $build/.heroku
+
+mkdir -p $build/.profile.d
+echo 'export PATH=$PATH' > $build/.profile.d/go.sh
+
+echo $GOROOT > $OPENSHIFT_GO_DIR/env/GOROOT
+echo $GOPATH > $OPENSHIFT_GO_DIR/env/GOPATH
+echo "$HOME/bin:$GOROOT/bin" > $OPENSHIFT_GO_DIR/env/OPENSHIFT_GO_PATH_ELEMENT
