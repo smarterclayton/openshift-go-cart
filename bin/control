@@ -24,14 +24,14 @@ function status() {
 
 
 function start() {
-    logf="$OPENSHIFT_GO_LOG_DIR/go.log"
+    logf="$OPENSHIFT_GO_DIR/logs/go.log"
     pushd "$OPENSHIFT_REPO_DIR" > /dev/null
     {
         godir=$(cat .godir)
         package=$(basename $godir)
 
         if [ -f "bin/$package" ]; then
-            echo "`date +"$FMT"`: Starting application '$OPENSHIFT_APP_NAME' ..."
+            echo "`date +"$FMT"`: Starting application '$OPENSHIFT_APP_NAME' from bin/$package..."
 
             nohup "bin/$package" >> $logf 2>&1 &
 
@@ -44,7 +44,7 @@ function start() {
                 exit $ret
             fi
         else
-            echo "WARN: Could not find the compiled application, will not start"
+            echo "WARN: Could not find the compiled application bin/$package, will not start"
         fi
     } >> $logf
 }
@@ -55,7 +55,7 @@ function stop() {
     fi
 
     if [ -n "$go_pid" ]; then
-        logf="$OPENSHIFT_GO_LOG_DIR/go.log"
+        logf="$OPENSHIFT_GO_DIR/logs/go.log"
         echo "`date +"$FMT"`: Stopping application '$OPENSHIFT_APP_NAME' ..." >> $logf
         /bin/kill $go_pid
         ret=$?
@@ -69,11 +69,9 @@ function stop() {
         fi
 
         echo "`date +"$FMT"`: Stopped Go application '$OPENSHIFT_APP_NAME'" >> $logf
-        rm -f $OPENSHIFT_GO_PID_DIR/node.pid
+        rm -f $OPENSHIFT_GO_DIR/pid/go.pid
     else
-        if `pgrep -x node -u $(id -u)  > /dev/null 2>&1`; then
-            echo "Warning: Application '$OPENSHIFT_APP_NAME' server exists without a pid file.  Use force-stop to kill." 1>&2
-        fi
+        echo "Warning: Application '$OPENSHIFT_APP_NAME' server exists without a pid file.  Use force-stop to kill." 1>&2
     fi
 }
 
@@ -95,10 +93,10 @@ function pre-build() {
 }
 
 function tidy() {
-  client_message "Emptying log dir: $OPENSHIFT_GO_LOG_DIR"
+  client_message "Emptying log dir: $OPENSHIFT_GO_DIR/logs"
   shopt -s dotglob
-  rm -rf $OPENSHIFT_GO_LOG_DIR/*
-  rm -rf ${OPENSHIFT_GO_DIR}tmp/*
+  rm -rf $OPENSHIFT_GO_DIR/logs/*
+  rm -rf $OPENSHIFT_GO_DIR/tmp/*
 }
 
 #

@@ -1,33 +1,20 @@
 Name: go
 Cartridge-Short-Name: GO
 Display-Name: Go 1.1
-Description: ""
 Version: "1.1"
-License: MIT License
-License-Url: 
-Vendor: 
-Website: 
+Versions: ["1.1", "1.0.3"]
+Website: https://github.com/smarterclayton/openshift-go-cart
 Cartridge-Version: 0.0.1
 Cartridge-Vendor: smarterclayton
 Categories:
   - service
   - golang
   - web_framework
-Help-Topics:
-Cart-Data:
-Suggests:
-
 Provides:
   - go-1.1
   - "go"
   - "go (version) = 1.1"
   - "go (version) = 1"
-Requires:
-
-Conflicts:
-
-Native-Requires:
-
 Scaling:
   Min: 1
   Max: -1
@@ -68,3 +55,15 @@ Endpoints:
         Backend:       ""
         Options:       { health: true }
 Install-Build-Required: false
+Version-Overrides:
+  '1.0.3':
+     Display-Name: Go 1.0.3
+     Provides:
+      - go-1.0
+      - "go"
+      - "go (version) = 1.0"
+      - "go (version) = 1"
+     Group-Overrides:
+       - components:
+         - go-1.0
+         - web_proxy

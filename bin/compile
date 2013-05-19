@@ -41,7 +41,7 @@ if test -d $cache/go-$ver/go
 then
     echo "-----> Using Go $ver"
 else
-    rm -rf $cache/* # be sure not to build up cruft
+    #rm -rf $cache/* # be sure not to build up cruft
     mkdir -p $cache/go-$ver
     cd $cache/go-$ver
     echo    "       First download, may take several minutes"

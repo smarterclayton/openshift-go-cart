@@ -12,16 +12,11 @@ parse_args $@
 # Don't set -u until after the above arg parsing is complete
 set -u
 
-# Copy the version specific files to nodejs directory
-shopt -s dotglob
-for dir in configuration etc; do
-    mkdir -p $OPENSHIFT_GO_DIR/$dir
-    cp -Lr $OPENSHIFT_GO_DIR/versions/$version/$dir/* $OPENSHIFT_GO_DIR/$dir 
-done
+echo "$version" > $OPENSHIFT_GO_DIR/env/GOVERSION
 
 ###
 pushd $OPENSHIFT_GO_DIR > /dev/null
-for dir in conf logs sessions run tmp pid cache; do
+for dir in logs tmp pid cache; do
 	mkdir -p $dir
 done
 popd > /dev/null
