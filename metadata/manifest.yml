@@ -8,7 +8,7 @@ License-Url:
 Vendor: 
 Website: 
 Cartridge-Version: 0.0.1
-Cartridge-Vendor: redhat
+Cartridge-Vendor: smarterclayton
 Categories:
   - service
   - golang
