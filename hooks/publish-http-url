@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Start the application httpd instance
-
 # Exit on any errors
 set -e
 
@@ -13,4 +11,4 @@ fi
 #
 # Publish this gear's HTTP URL/endpoint.
 #
-echo "${OPENSHIFT_GEAR_DNS}|${gip}:${OPENSHIFT_NODEJS_PROXY_PORT}"
+echo "${OPENSHIFT_GEAR_DNS}|${gip}:${OPENSHIFT_GO_PROXY_PORT}"
