@@ -44,7 +44,7 @@ else
     rm -rf $cache/* # be sure not to build up cruft
     mkdir -p $cache/go-$ver
     cd $cache/go-$ver
-    echo -n "       First download, may take several minutes"
+    echo    "       First download, may take several minutes"
     echo -n "-----> Installing Go $ver..."
     curl -sO $url
     tar zxf $file
@@ -56,7 +56,7 @@ GOROOT=$cache/go-$ver/go export GOROOT
 GOPATH=$build/.openshift/g export GOPATH
 PATH=$GOROOT/bin:$PATH
 
-if ! (which hg 2>&1 >/dev/null && which bzr 2>&1 >/dev/null)
+if ! (which hg >/dev/null 2>&1 && which bzr >/dev/null 2>&1)
 then
     echo -n "       Installing Virtualenv..."
     virtualenv --python $python --distribute --never-download --prompt='(venv) ' $venv 2>&1 > /dev/null 
@@ -94,4 +94,4 @@ echo $GOPATH > $OPENSHIFT_GO_DIR/env/GOPATH
 echo "$HOME/bin:$GOROOT/bin" > $OPENSHIFT_GO_DIR/env/OPENSHIFT_GO_PATH_ELEMENT
 
 echo $OPENSHIFT_GO_IP > $OPENSHIFT_GO_DIR/env/HOST
-echo $OPENSHIFT_INTERNAL_PORT > $OPENSHIFT_GO_DIR/env/PORT
+echo $OPENSHIFT_GO_PORT > $OPENSHIFT_GO_DIR/env/PORT
