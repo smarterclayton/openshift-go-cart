@@ -9,38 +9,17 @@ Once the app is created, you'll need to create and add a ".godir" file in your r
 
     github.com/smarterclayton/example
 
-which would tell OpenShift to place all of the files in the root of the Git repository inside of the 'github.com/smarterclayton/example' package prior to compilation.
+which would tell OpenShift to place all of the files in the root of the Git repository inside of the <code>github.com/smarterclayton/example</code> package prior to compilation.
 
-When you push code to the repo, the cart will compile your package into $OPENSHIFT_REPO_DIR/bin/, with the last segment of the .godir being the name of the executable.  For the above .godir, your executable will be:
+When you push code to the repo, the cart will compile your package into <code>$OPENSHIFT_REPO_DIR/bin/</code>, with the last segment of the .godir being the name of the executable.  For the above .godir, your executable will be:
 
     $OPENSHIFT_REPO_DIR/bin/example
 
 If you want to serve web requests (vs. running in the background), you'll need to listen on the ip address and port that OpenShift allocates - those are available as HOST and PORT in the environment.
 
-Here's a sample go file which would print "hello, world" when someone hits your web application:
+The repository contains a sample go file which will print "hello, world" when someone hits your web application - see [web.go](https://github.com/smarterclayton/openshift-go-cart/blob/master/template/web.go).
 
-    package main
-
-    import (
-      "fmt"
-      "net/http"
-      "os"
-    )
-
-    func main() {
-      http.HandleFunc("/", hello)
-      fmt.Println("listening...")
-      err := http.ListenAndServe(os.Getenv("HOST")+":"+os.Getenv("PORT"), nil)
-      if err != nil {
-        panic(err)
-      }
-    }
-
-    func hello(res http.ResponseWriter, req *http.Request) {
-      fmt.Fprintln(res, "hello, world")
-    }
-
-Any log output will be generated to $OPENSHIFT_GO_DIR/logs/go.log
+Any log output will be generated to <code>$OPENSHIFT_GO_DIR/logs/go.log</code>
 
 
 How it Works
