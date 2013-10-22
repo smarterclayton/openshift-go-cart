@@ -6,7 +6,7 @@ FMT="%a %b %d %Y %H:%M:%S GMT%z (%Z)"
 function is_go_service_running() {
     if [ -f $OPENSHIFT_GO_DIR/pid/go.pid ]; then
         go_pid=$( cat $OPENSHIFT_GO_DIR/pid/go.pid 2> /dev/null )
-        if `ps --pid $go_pid 2>&1`; then
+        if ps --pid $go_pid 2>&1; then
             return 0
         fi
     fi
