@@ -6,6 +6,8 @@
 
 set -eo pipefail
 
+source "${OPENSHIFT_GO_DIR}/lib/util"
+
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
