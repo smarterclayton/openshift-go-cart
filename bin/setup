@@ -13,6 +13,7 @@ parse_args $@
 set -u
 
 echo "$version" > $OPENSHIFT_GO_DIR/env/GOVERSION
+echo ${OPENSHIFT_GO_DIR}/logs > ${OPENSHIFT_GO_DIR}/env/OPENSHIFT_GO_LOG_DIR
 
 ###
 pushd $OPENSHIFT_GO_DIR > /dev/null

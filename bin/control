@@ -24,7 +24,7 @@ function status() {
 
 
 function start() {
-    logf="$OPENSHIFT_GO_DIR/logs/go.log"
+    logf="${OPENSHIFT_GO_LOG_DIR}/go.log"
     pushd "$OPENSHIFT_REPO_DIR" > /dev/null
     {
         godir=$(grep -vE '(^ *#|^$)' .godir | head -1)
@@ -55,7 +55,7 @@ function stop() {
     fi
 
     if [ -n "$go_pid" ]; then
-        logf="$OPENSHIFT_GO_DIR/logs/go.log"
+        logf="${OPENSHIFT_GO_LOG_DIR}/go.log"
         echo "`date +"$FMT"`: Stopping application '$OPENSHIFT_APP_NAME' ..." >> $logf
         /bin/kill $go_pid
         ret=$?
@@ -93,9 +93,9 @@ function pre-build() {
 }
 
 function tidy() {
-  client_message "Emptying log dir: $OPENSHIFT_GO_DIR/logs"
+  client_message "Emptying log dir: $OPENSHIFT_GO_LOG_DIR"
   shopt -s dotglob
-  rm -rf $OPENSHIFT_GO_DIR/logs/*
+  rm -rf $OPENSHIFT_GO_LOG_DIR/*
   rm -rf $OPENSHIFT_GO_DIR/tmp/*
 }
 
