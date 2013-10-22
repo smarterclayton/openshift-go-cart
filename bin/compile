@@ -72,7 +72,7 @@ then
     echo " done"
 fi
 
-name=$(cat $build/.godir)
+name=$(grep -vE '(^ *#|^$)' $build/.godir | head -1)
 p=$GOPATH/src/$name
 mkdir -p $p
 cp -a $build/* $p
