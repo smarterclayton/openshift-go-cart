@@ -35,6 +35,7 @@ fi
 if ! test -f $build/.godir
 then
     echo >&2 " !     A .godir is required. For instructions:"
+    echo >&2 " !     http://mmcgrana.github.com/2012/09/getting-started-with-go-on-heroku"
     echo >&2 " !     https://www.openshift.com/kb/kb-TDOD-some-golang-instructions"
     exit 1
 fi
