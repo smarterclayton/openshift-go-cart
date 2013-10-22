@@ -86,14 +86,14 @@ go get -tags openshift ./...
 
 mkdir -p $build/bin
 mv $GOPATH/bin/* $build/bin
-rm -rf $build/.openshift
+rm -rf $build/.openshift # this removes the constructed $GOPATH
 
 mkdir -p $build/.profile.d
-echo 'export PATH=$GOPATH/bin:$PATH' > $build/.profile.d/go.sh
+echo 'export PATH=$PATH' > $build/.profile.d/go.sh
 
 echo $GOROOT > $OPENSHIFT_GO_DIR/env/GOROOT
 echo $GOPATH > $OPENSHIFT_GO_DIR/env/GOPATH
-echo "$HOME/bin:$GOPATH/bin:$GOROOT/bin" > $OPENSHIFT_GO_DIR/env/OPENSHIFT_GO_PATH_ELEMENT
+echo "$HOME/bin:$GOROOT/bin" > $OPENSHIFT_GO_DIR/env/OPENSHIFT_GO_PATH_ELEMENT
 
 echo $OPENSHIFT_GO_IP > $OPENSHIFT_GO_DIR/env/HOST
 echo $OPENSHIFT_GO_PORT > $OPENSHIFT_GO_DIR/env/PORT
