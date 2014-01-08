@@ -3,10 +3,13 @@
 STOPTIMEOUT=10
 FMT="%a %b %d %Y %H:%M:%S GMT%z (%Z)"
 
+source "${OPENSHIFT_GO_DIR}/lib/util"
+
 function is_go_service_running() {
+    exec_name=$(basename $(get_godir))
     if [ -f $OPENSHIFT_GO_DIR/pid/go.pid ]; then
         go_pid=$( cat $OPENSHIFT_GO_DIR/pid/go.pid 2> /dev/null )
-        if ps --pid $go_pid 2>&1; then
+        if [ `ps --no-heading --pid $go_pid | wc -l` -gt 0 ] ; then
             return 0
         fi
     fi
@@ -24,7 +27,7 @@ function status() {
 
 
 function start() {
-    logf="$OPENSHIFT_GO_DIR/logs/go.log"
+    logf="${OPENSHIFT_GO_LOG_DIR}/go.log"
 
     if is_go_service_running; then
         echo "`date +"$FMT"`: Application '$OPENSHIFT_APP_NAME' is already running; skipping start()"
@@ -33,8 +36,7 @@ function start() {
 
     pushd "$OPENSHIFT_REPO_DIR" > /dev/null
     {
-        godir=$(cat .godir)
-        package=$(basename $godir)
+	package=$(basename $(get_godir))
 
         if [ -f "bin/$package" ]; then
             echo "`date +"$FMT"`: Starting application '$OPENSHIFT_APP_NAME' from bin/$package..."
@@ -61,7 +63,7 @@ function stop() {
     fi
 
     if [ -n "$go_pid" ]; then
-        logf="$OPENSHIFT_GO_DIR/logs/go.log"
+        logf="${OPENSHIFT_GO_LOG_DIR}/go.log"
         echo "`date +"$FMT"`: Stopping application '$OPENSHIFT_APP_NAME' ..." >> $logf
         /bin/kill $go_pid
         ret=$?
@@ -99,9 +101,9 @@ function pre-build() {
 }
 
 function tidy() {
-  client_message "Emptying log dir: $OPENSHIFT_GO_DIR/logs"
+  client_message "Emptying log dir: $OPENSHIFT_GO_LOG_DIR"
   shopt -s dotglob
-  rm -rf $OPENSHIFT_GO_DIR/logs/*
+  rm -rf $OPENSHIFT_GO_LOG_DIR/*
   rm -rf $OPENSHIFT_GO_DIR/tmp/*
 }
 

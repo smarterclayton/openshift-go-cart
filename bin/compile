@@ -6,10 +6,12 @@
 
 set -eo pipefail
 
+source "${OPENSHIFT_GO_DIR}/lib/util"
+
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
-ver=${GOVERSION:-1.1}
+ver=${GOVERSION:-1.1.2}
 file=${GOFILE:-go$ver.$(uname|tr A-Z a-z)-amd64.tar.gz}
 url=${GOURL:-http://go.googlecode.com/files/$file}
 buildpack=$(dirname $(dirname $0))
@@ -34,6 +36,7 @@ if ! test -f $build/.godir
 then
     echo >&2 " !     A .godir is required. For instructions:"
     echo >&2 " !     http://mmcgrana.github.com/2012/09/getting-started-with-go-on-heroku"
+    echo >&2 " !     https://www.openshift.com/kb/kb-TDOD-some-golang-instructions"
     exit 1
 fi
 
@@ -72,10 +75,10 @@ then
     echo " done"
 fi
 
-name=$(cat $build/.godir)
+name=$(get_godir $build/.godir)
 p=$GOPATH/src/$name
 mkdir -p $p
-cp -R $build/* $p
+cp -a $build/* $p
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
 echo "-----> Running: go get -tags openshift ./..."
@@ -84,7 +87,7 @@ go get -tags openshift ./...
 
 mkdir -p $build/bin
 mv $GOPATH/bin/* $build/bin
-rm -rf $build/.openshift
+rm -rf $build/.openshift # this removes the constructed $GOPATH
 
 mkdir -p $build/.profile.d
 echo 'export PATH=$PATH' > $build/.profile.d/go.sh

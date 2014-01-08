@@ -16,6 +16,14 @@ function wait_for_stop {
     done
 }
 
+# get the import path name from the default godir, or pass an argument of
+# an alternate .godir to read from
+function get_godir {
+  filename=${1:-${OPENSHIFT_REPO_DIR}/.godir}
+  grep -vE '(^ *#|^$)' ${filename} | head -1
+}
+
+
 function parse_args {
     while :
     do
