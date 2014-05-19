@@ -88,7 +88,7 @@ go get -tags openshift ./...
 
 mkdir -p $build/bin
 mv $GOPATH/bin/* $build/bin
-#rm -rf $build/.openshift # this removes the constructed $GOPATH
+rm -rf $build/.openshift/g # this removes the constructed $GOPATH
 
 mkdir -p $build/.profile.d
 echo 'export PATH=$PATH' > $build/.profile.d/go.sh
