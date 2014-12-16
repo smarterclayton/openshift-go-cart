@@ -57,8 +57,15 @@ else
 fi
 
 GOROOT=$cache/go-$ver/go export GOROOT
-GOPATH=$build/.openshift/g export GOPATH
 PATH=$GOROOT/bin:$PATH
+
+if test -f $build/.gopath
+then
+    GOPATH=$OPENSHIFT_HOMEDIR$(get_gopath $build/.gopath) export GOPATH
+else
+    GOPATH=$build/.openshift/g export GOPATH
+fi
+
 
 if ! (which hg >/dev/null 2>&1 && which bzr >/dev/null 2>&1)
 then
