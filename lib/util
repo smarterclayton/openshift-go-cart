@@ -23,6 +23,13 @@ function get_godir {
   grep -vE '(^ *#|^$)' ${filename} | head -1
 }
 
+# get the import path name from the default gopath, or pass an argument of
+# an alternate .gopath to read from
+function get_gopath {
+  filename=${1:-${OPENSHIFT_REPO_DIR}/.gopath}
+  grep -vE '(^ *#|^$)' ${filename} | head -1
+}
+
 
 function parse_args {
     while :

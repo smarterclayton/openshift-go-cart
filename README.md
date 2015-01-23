@@ -19,7 +19,9 @@ If you want to serve web requests (vs. running in the background), you'll need t
 
 The repository contains a sample go file which will print "hello, world" when someone hits your web application - see [web.go](https://github.com/smarterclayton/openshift-go-cart/blob/master/template/web.go).
 
-Any log output will be generated to <code>$OPENSHIFT_GO_LOG_DIR</code>
+Any log output will be generated to <code>$OPENSHIFT_GO_LOG_DIR</code>.
+
+To provide your own custom GOPATH directory, add a ".gopath" file to the root of your Git repo with the desired GOPATH location, *relative to the $OPENSHIFT_HOMEDIR directory*. Example of a .gopath file content: `app-root/data/mygopath`. The specified location will be additive to the existing GOPATH provided by the cartridge as the *first path* declared in GOPATH (notice the [GOPATH spec](http://golang.org/cmd/go/#hdr-GOPATH_environment_variable) defines that "Go searches each directory listed in GOPATH to find source code, but new packages are always downloaded into the first directory in the list"). 
 
 
 How it Works

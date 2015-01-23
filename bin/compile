@@ -57,9 +57,8 @@ else
 fi
 
 GOROOT=$cache/go-$ver/go export GOROOT
-GOPATH=$build/.openshift/g export GOPATH
 PATH=$GOROOT/bin:$PATH
-
+GOPATH=$build/.openshift/g export GOPATH
 if ! (which hg >/dev/null 2>&1 && which bzr >/dev/null 2>&1)
 then
     echo -n "       Installing Virtualenv..."
@@ -76,22 +75,35 @@ then
     echo " done"
 fi
 
+if test -f $build/.gopath
+then
+    CUSTOM_GOPATH=$OPENSHIFT_HOMEDIR$(get_gopath $build/.gopath) export CUSTOM_GOPATH
+fi
+
 name=$(get_godir $build/.godir)
-p=$GOPATH/src/$name
+p=${CUSTOM_GOPATH:-$GOPATH}/src/$name
+b=${CUSTOM_GOPATH:-$GOPATH}/bin
+
 mkdir -p $p
 cp -a $build/* $p
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
 echo "-----> Running: go get -tags openshift ./..."
 cd $p
+
+if test -f $build/.gopath
+then
+    GOPATH=$CUSTOM_GOPATH:$GOPATH export GOPATH
+fi
 go get -tags openshift ./...
 
 mkdir -p $build/bin
-mv $GOPATH/bin/* $build/bin
-rm -rf $build/.openshift/g # this removes the constructed $GOPATH
+mv $b/* $build/bin
 
 mkdir -p $build/.profile.d
 echo 'export PATH=$PATH' > $build/.profile.d/go.sh
+
+rm -rf $build/.openshift/g # this removes the constructed $GOPATH
 
 echo $GOROOT > $OPENSHIFT_GO_DIR/env/GOROOT
 echo $GOPATH > $OPENSHIFT_GO_DIR/env/GOPATH
