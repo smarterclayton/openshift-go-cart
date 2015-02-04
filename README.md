@@ -15,7 +15,7 @@ When you push code to the repo, the cart will compile your package into <code>$O
 
     $OPENSHIFT_REPO_DIR/bin/goexample
 
-If you want to serve web requests (vs. running in the background), you'll need to listen on the ip address and port that OpenShift allocates - those are available as HOST and PORT in the environment.
+If you want to serve web requests (vs. running in the background), you'll need to listen on the ip address and port that OpenShift allocates - those are available as OPENSHIFT_GO_IP and OPENSHIFT_GO_PORT in the environment.
 
 The repository contains a sample go file which will print "hello, world" when someone hits your web application - see [web.go](https://github.com/smarterclayton/openshift-go-cart/blob/master/template/web.go).
 
@@ -31,7 +31,7 @@ When you push code to your repo, a Git postreceive hook runs and invokes the bin
 
     go get -tags openshift ./...
 
-on a working copy of your source.  The main file that you run will have access to two environment variables, $HOST and $PORT, which contain the internal address you must listen on to receive HTTP requests to your application.
+on a working copy of your source.  The main file that you run will have access to two environment variables, $OPENSHIFT_GO_IP and $OPENSHIFT_GO_PORT, which contain the internal address you must listen on to receive HTTP requests to your application.
 
 
 Credits
