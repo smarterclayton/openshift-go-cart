@@ -104,10 +104,3 @@ mkdir -p $build/.profile.d
 echo 'export PATH=$PATH' > $build/.profile.d/go.sh
 
 rm -rf $build/.openshift/g # this removes the constructed $GOPATH
-
-echo $GOROOT > $OPENSHIFT_GO_DIR/env/GOROOT
-echo $GOPATH > $OPENSHIFT_GO_DIR/env/GOPATH
-echo "$HOME/bin:$GOROOT/bin" > $OPENSHIFT_GO_DIR/env/OPENSHIFT_GO_PATH_ELEMENT
-
-echo $OPENSHIFT_GO_IP > $OPENSHIFT_GO_DIR/env/HOST
-echo $OPENSHIFT_GO_PORT > $OPENSHIFT_GO_DIR/env/PORT
